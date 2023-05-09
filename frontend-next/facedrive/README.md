@@ -2,6 +2,10 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
+Note from Hugh:
+- Install Node version 18
+- npm stands for Node Package Manager, its like pip. Should come with Node 18
+
 First, run the development server:
 
 ```bash
