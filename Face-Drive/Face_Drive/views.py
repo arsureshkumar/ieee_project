@@ -43,7 +43,7 @@ def facedect(loc):
 
 
 def about(request):
-    return render(request,'templates/about.html',{})
+    return render(request,'about.html',{})
 
 def register(request):
     if request.method =="POST":
@@ -59,7 +59,7 @@ def register(request):
                     return redirect(login)        
 
     form =Registrationform() # create a new instance of form class to be rendered
-    return render(request,'templates/register.html',{'form':form}) 
+    return render(request,'register.html',{'form':form}) 
 
 def base(request):
         if request.method =="POST":
@@ -79,19 +79,19 @@ def base(request):
                 return render(request,"base.html",{"MyLoginForm": MyLoginForm})  
 
 def login_view(request):
-    return render(request, 'templates/login.html', {})
+    return render(request, 'login.jsx', {})
 
 def logout_view(request):
     logout(request)
     return redirect(login)
 
 def index(request):
-   return render(request, 'templates/index.html', {})
+   return render(request, 'index.html', {})
 
 
 @login_required
 def home_view(request):
-    return render(request, 'templates/home.html', {})
+    return render(request, 'home.html', {})
 
 
 # def find_user_view(request):
