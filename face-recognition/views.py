@@ -11,6 +11,8 @@ import face_recognition
 import cv2 
 
 def facedect(loc):
+
+    # we wont be using this, our frontend should be sending us encoded information of the image
     cam = cv2.VideoCapture(0) # activates camera
     s, img = cam.read() # s is True is successfully captured, img is a NumPy array but just of a single frame
     
@@ -78,6 +80,7 @@ def base(request):
                 MyLoginForm = LoginForm()
                 return render(request,"base.html",{"MyLoginForm": MyLoginForm})  
 
+# all these endpoints render out html for the frontend, we wont be needing them
 def login_view(request):
     return render(request, 'templates/login.html', {})
 

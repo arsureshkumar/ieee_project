@@ -1,14 +1,27 @@
 import './App.css';
-import Webcam from "react-webcam"
+import { RegisterPage } from "./pages/register";
+import React, { useState } from "react";
+import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 
-function App() {
+
+const App = () => {
+
+
   return (
+    <Router>
     <div className="App">
       <body>
-        <h1> FaceDrive PogU </h1>
-        <Webcam />
+        <h1> Welcome to FaceDrive PogU </h1>
+        <Link to="/register"> Register </Link>
+        
       </body>
+      <Routes>
+        <Route path="/register" Component={RegisterPage} />
+      </Routes>
+      
+ 
     </div>
+    </Router>
   );
 }
 
