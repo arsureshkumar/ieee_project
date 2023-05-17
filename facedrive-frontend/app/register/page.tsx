@@ -2,7 +2,7 @@
 
 import {Camera} from "react-camera-pro";
 import React, { useState, useRef } from "react";
-import { sendImage } from "@/api-handler/api-handlers";
+import { sendImage, getTest } from "@/api-handler/api-handlers";
 
 export default function Register() {
   
@@ -11,10 +11,12 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   
   const handleClick = async () => {
-    setImage(camera.current.takePhoto());
-    setLoading(true);
+    const image = camera.current.takePhoto();
+    setImage(image);
+    
     if (image) {
-        const response = await sendImage(image)
+        setLoading(true);
+        const response = await sendImage(image);
         if (response) {
             setLoading(false);
             console.log(response);
@@ -27,11 +29,13 @@ export default function Register() {
 
   return (
     <body>
-      <h1> Register page </h1>
+      <h1 className="text-center font-bold"> Register page </h1>
       <div>
+        
         <Camera ref={camera} aspectRatio={16 / 9}/>
-        <button onClick={handleClick}>Take photo</button>
-        {loading ? 'Uploading...' : 'Upload Image'}
+        
+        {loading ? (<h1> Uploading </h1>) : (<h1>Upload Image</h1>)}
+        <button onClick={handleClick} className="rounded-lg bg-red-600 p-4"> Take photo </button>
         {image && (<img src={image} alt='Taken photo'/>)}
     </div>
     </body>
