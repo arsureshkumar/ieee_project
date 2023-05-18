@@ -32,7 +32,12 @@ export default function Register() {
       <h1 className="text-center font-bold"> Register page </h1>
       <div>
         
-        <Camera ref={camera} aspectRatio={16 / 9}/>
+        <Camera ref={camera} aspectRatio={16 / 9} errorMessages={{
+          noCameraAccessible: undefined,
+          permissionDenied: undefined,
+          switchCamera: undefined,
+          canvas: undefined
+        }}/>
         
         {loading ? (<h1> Uploading </h1>) : (<h1>Upload Image</h1>)}
         <button onClick={handleClick} className="rounded-lg bg-red-600 p-4"> Take photo </button>
