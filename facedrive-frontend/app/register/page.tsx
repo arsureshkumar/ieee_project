@@ -31,9 +31,9 @@ export default function Register() {
     event.preventDefault();
     const response = await registerUser(username, password, image);
     if (response) { console.log(response) }
-    console.log('Username:', username);
-    console.log('Password:', password);
-    console.log(`This is the image data: ${image}`)
+    //console.log('Username:', username);
+    //console.log('Password:', password);
+    //console.log(`This is the image data: ${image}`)
   };
 
   return (
