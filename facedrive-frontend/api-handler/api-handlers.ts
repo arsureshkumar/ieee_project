@@ -1,25 +1,24 @@
 // This file is for handling api routes
 
 // localhost Django URL for now
-const apiUurl = 'http://localhost:8000/api';
+const apiUrl = 'http://localhost:8000/api';
 
-export async function sendImage(base64ImageData: string): Promise<any> {
-     // Replace with your Django API endpoint URL
+export async function registerUser(username: string, password: string, base64ImageData: string): Promise<any> {
     
     try {
-      const response = await fetch(`${apiUurl}/receiveImage`, {
+      const response = await fetch(`${apiUrl}/receiveImage`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ image: base64ImageData }),
+        body: JSON.stringify({ username: username, password: password, image: base64ImageData }),
       });
   
       if (!response.ok) {
-        throw new Error('Image upload failed');
+        throw new Error('Registeration failed :(');
       }
   
-      console.log('Image uploaded successfully');
+      console.log('Registeration successfull!');
       return response;
 
     } catch (error) {
@@ -27,11 +26,10 @@ export async function sendImage(base64ImageData: string): Promise<any> {
     } 
   }
 
-  export async function getTest(): Promise<any> {
-    // Replace with your Django API endpoint URL
+  export async function getAllUsers(): Promise<any> {
  
     try {
-        const response = await fetch(`${apiUurl}/testReq`, {
+        const response = await fetch(`${apiUrl}/getUsers`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -42,8 +40,8 @@ export async function sendImage(base64ImageData: string): Promise<any> {
           throw new Error('Failed to fetch data');
         }
     
-        const data = await response.json();
-        return data;
+        return response.json();
+
       } catch (error) {
         console.error('Error fetching data:', error);
         throw error;
