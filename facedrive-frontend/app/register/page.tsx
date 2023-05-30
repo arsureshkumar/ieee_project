@@ -42,6 +42,8 @@ export default function Register() {
         {loading ? (<h1> Uploading </h1>) : (<h1>Upload Image</h1>)}
         <button onClick={handleClick} className="rounded-lg bg-red-600 p-4"> Take photo </button>
         {image && (<img src={image} alt='Taken photo'/>)}
+
+        
     </div>
     </body>
   )
