@@ -10,7 +10,7 @@ export default function Register() {
   const camera = useRef(null);
   
   const [image, setImage] = useState('');
-  const [name, setName] = useState('');
+  // const [name, setName] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -18,7 +18,6 @@ export default function Register() {
 
   const [accountCreated, setAccountCreated] = useState(false);
 
-  // const [loading, setLoading] = useState(false);
   const [fSetup, setfSetup] = useState(false);
   const [openCam, setOpenCam] = useState(false);
 
@@ -38,11 +37,12 @@ export default function Register() {
   const handleTakePhoto = () => {
     const image = camera.current.takePhoto();
     setImage(image); 
+    handleOpenCam(); 
   }
 
-  const handleNameChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
-    setName(event.target.value);
-  };
+  // const handleNameChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+  //   setName(event.target.value);
+  // };
 
   const handleUsernameChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
     setUsername(event.target.value);
@@ -75,20 +75,19 @@ export default function Register() {
   };
 
   const handleSubmit = async (event: { preventDefault: () => void; }) => {
-    // event.preventDefault();
-    // if (password !== confirmPassword) {
-    //   setPasswordsMatch(false);
-    // } else {
-    //   const response = await registerUser(name, username, password, image);
-    //   if (response) { console.log(response) }
-    //   console.log('Full Name:', name);
-    //   console.log('Username:', username);
-    //   console.log('Password:', password);
-    //   console.log(`This is the image data: ${image}`)
-    // }
     event.preventDefault();
-    const response = await registerUser(username, password, image);
-    if (response) { console.log(response) }
+    if (password !== confirmPassword) {
+      setPasswordsMatch(false);
+    } else {
+      const response = await registerUser(username, password, image);
+      if (response) { console.log(response) }
+      console.log('Username:', username);
+      console.log('Password:', password);
+      console.log(`This is the image data: ${image}`)
+    }
+    // event.preventDefault();
+    // const response = await registerUser(username, password, image);
+    // if (response) { console.log(response) }
   };
 
   return (
@@ -103,17 +102,6 @@ export default function Register() {
 
         <h2 className="text-center mt-6 mb-4 font-bold">Basic Information</h2>
 
-          <div>
-            <label htmlFor="username">Full Name </label>
-            <br />
-            <input
-              className="bg-gray h-10 my-3 px-3 rounded-md w-full"
-              type="text"
-              id="name"
-              value={name}
-              onChange={handleNameChange}
-            />
-          </div>
           <div>
             <label htmlFor="username">Username </label>
             <br />
@@ -197,10 +185,10 @@ export default function Register() {
         
         
 
-          {( name && password && username && image) && (
+          {( password && username && image) && (
             <button type="submit" className="border px-3 bg-lightblue mx-auto mt-5 mb-12 text-white h-10 w-full rounded-md">Register</button>
           )}
-          {( !name || !password || !passwordsMatch || !username || !image) && (
+          {( !password || !passwordsMatch || !username || !image) && (
             <button type="submit" disabled={true} className="border px-3 bg-sky-500/50 mx-auto mt-5 mb-12 text-white h-10 w-full rounded-md">Register</button>
           )}
         </form>
