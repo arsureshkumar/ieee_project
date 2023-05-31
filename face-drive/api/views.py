@@ -35,6 +35,7 @@ def facedect(profile_image_base64, test_image_base64, test_image_location):
     print("profile_image_encoding", profile_image_encoding)
 
     # Get face encodings for test image
+    print("Login face locations when logging in are ", test_image_location)
     face_encodings = face_recognition.face_encodings(test_image, known_face_locations=test_image_location, num_jitters=100, model="large")
     print("face_encodings", face_encodings)
 

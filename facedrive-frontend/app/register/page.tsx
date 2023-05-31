@@ -3,6 +3,7 @@
 import {Camera} from "react-camera-pro";
 import React, { useState, useRef } from "react";
 import { registerUser } from "@/api-handler/api-handlers";
+import { useRouter } from 'next/navigation';
 import Navbar from "../components/Navbar";
 
 export default function Register() {
@@ -16,14 +17,13 @@ export default function Register() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordsMatch, setPasswordsMatch] = useState(true);
 
-  const [accountCreated, setAccountCreated] = useState(false);
-
   const [fSetup, setfSetup] = useState(false);
   const [openCam, setOpenCam] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(false);
 
   const loggedInState = false;
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
 
   const handleFSetup = () => {
     setfSetup(!fSetup);
@@ -40,10 +40,6 @@ export default function Register() {
     setImage(image); 
     handleOpenCam(); 
   }
-
-  // const handleNameChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
-  //   setName(event.target.value);
-  // };
 
   const handleUsernameChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
     setUsername(event.target.value);
@@ -80,24 +76,41 @@ export default function Register() {
     if (password !== confirmPassword) {
       setPasswordsMatch(false);
     } else {
+      setIsLoading(true)
       const response = await registerUser(username, password, image);
-      if (response) { console.log(response) }
-      setUsername('')
-      setPassword('')
-      setConfirmPassword('')
-      setImage('')
-      handleFSetup();
-      console.log('Username:', username);
-      console.log('Password:', password);
-      console.log(`This is the image data: ${image}`)
+      // 200: User created successfully
+      if (response.ok) { 
+        console.log(response) 
+        router.push('/drive');
+      } 
+      // 400: Invalid user input
+      else if (response.status === 400) {
+        const errorData = response.json();
+        if (errorData.error === 'User already exists') {
+          // Handle the "User already exists" error
+          console.log(errorData);
+        } else if (errorData.message === 'No faces detected') {
+          // Handle the "No faces detected" error
+          console.log(errorData);
+        } else {
+          // Handle other possible errors
+          console.log(errorData);
+        setIsLoading(false);
+        setUsername('');
+        setPassword('');
+        setConfirmPassword('');
+        setImage('');
+        handleFSetup();
+        console.log('Username:', username);
+        console.log('Password:', password);
+        console.log(`This is the image data: ${image}`);
+      }}
+      
     }
-    // event.preventDefault();
-    // const response = await registerUser(username, password, image);
-    // if (response) { console.log(response) }
   };
 
   return (
-    <body className="m-5">
+    <body className="m-5 min-h-screen">
       
       <Navbar loggedIn = {loggedInState} />
 
@@ -201,6 +214,13 @@ export default function Register() {
 
         </div>
         
+        {isLoading && (
+          
+          <dialog className="">
+              <h1> Loading </h1>
+          </dialog>
+        )}
+
     </body>
   )
 }
