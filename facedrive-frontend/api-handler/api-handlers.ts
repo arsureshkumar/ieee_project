@@ -3,6 +3,29 @@
 // localhost Django URL for now
 const apiUrl = 'http://localhost:8000/api';
 
+export async function loginUser(username: string, base64ImageData: string): Promise<any> {
+    
+  try {
+    const response = await fetch(`${apiUrl}/loginUser`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username: username, image: base64ImageData }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Registeration failed :(');
+    }
+
+    console.log('Registeration successfull!');
+    return response;
+
+  } catch (error) {
+    console.error('Error uploading image:', error);
+  } 
+}
+
 export async function registerUser(username: string, password: string, base64ImageData: string): Promise<any> {
     
     try {
