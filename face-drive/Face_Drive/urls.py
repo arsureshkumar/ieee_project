@@ -20,7 +20,7 @@ from api.views import registerUser, getUsers, loginUser
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/receiveImage', registerUser),
+    path('api/registerUser', registerUser),
     path('api/getUsers', getUsers),
     path('api/loginUser', loginUser)
 ]

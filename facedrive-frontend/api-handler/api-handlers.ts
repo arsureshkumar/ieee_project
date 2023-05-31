@@ -15,10 +15,10 @@ export async function loginUser(username: string, base64ImageData: string): Prom
     });
 
     if (!response.ok) {
-      throw new Error('Registeration failed :(');
+      throw new Error('Login failed :(');
     }
 
-    console.log('Registeration successfull!');
+    // console.log('Login successfull!');
     return response;
 
   } catch (error) {
@@ -29,7 +29,7 @@ export async function loginUser(username: string, base64ImageData: string): Prom
 export async function registerUser(username: string, password: string, base64ImageData: string): Promise<any> {
     
     try {
-      const response = await fetch(`${apiUrl}/receiveImage`, {
+      const response = await fetch(`${apiUrl}/registerUser`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

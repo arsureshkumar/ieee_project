@@ -7,7 +7,6 @@ import json
 
 # Face recognition libraries
 import face_recognition
-import cv2 
 import numpy as np
 import base64
 import io
@@ -19,25 +18,25 @@ def facedect(profile_image_base64, test_image_base64, test_image_location):
     profile_image = Image.open(io.BytesIO(profile_image_bytes))
     profile_image.save("./test-images/profile.jpg")
     profile_image = np.array(profile_image)
-    print(profile_image)
+    # print(profile_image)
 
     # Decode test image from base64
     test_image_bytes = base64.b64decode(test_image_base64.split(",")[1])
     test_image = Image.open(io.BytesIO(test_image_bytes))
     test_image.save("./test-images/login.jpg")
     test_image = np.array(test_image)
-    print(test_image)
+    # print(test_image)
 
 
     # Get face encodings for profile image
     profile_locations = face_recognition.face_locations(profile_image, model="cnn", number_of_times_to_upsample=0)
     print("profile locations when logging in are ", profile_locations)
     profile_image_encoding = face_recognition.face_encodings(profile_image, known_face_locations=profile_locations, num_jitters=100, model="large")
-    print(profile_image_encoding)
+    print("profile_image_encoding", profile_image_encoding)
 
     # Get face encodings for test image
     face_encodings = face_recognition.face_encodings(test_image, known_face_locations=test_image_location, num_jitters=100, model="large")
-    print(face_encodings)
+    print("face_encodings", face_encodings)
 
     if len(face_encodings) > 0:
         # Compare test image encodings with profile image encoding
@@ -77,15 +76,14 @@ def loginUser(request):
                         # 1st arg is image in DB, 2nd is login image
                         if facedect(head_shot, login_headshot, face_locations):
                             print("face rec success!")
-                            return JsonResponse({'message': 'User face rec auth success.'})
+                            return JsonResponse({'message': 'User face rec auth success.'}, status=200)
                         else:
                             print("face rec failure!")
-                            return JsonResponse({'message': 'Face not recognized.'})
+                            return JsonResponse({'error': 'Face not recognized.'}, status=400)
                 
                 except UserProfile.DoesNotExist:
                     # UserProfile does not exist for the user
                     return JsonResponse({'error': 'UserProfile does not exist.'}, status=400)
-
 
             except User.DoesNotExist:
             # User does not exist
@@ -133,7 +131,7 @@ def registerUser(request):
 
                 return JsonResponse(
                     {'message': 'POST request received successfully',
-                    'registerData': data})
+                    'registerData': data}, status=200)
         
         except json.JSONDecodeError:
             return JsonResponse({'message': 'Invalid JSON data'}, status=400)
@@ -159,7 +157,7 @@ def getUsers(request):
                 pass
 
         # Return the user data as a JSON response
-        return JsonResponse({'users': user_data})
+        return JsonResponse({'users': user_data}, status=200)
 
     # Return a 405 Method Not Allowed response for non-GET requests
     return JsonResponse({'error': 'Method not allowed.'}, status=405)
