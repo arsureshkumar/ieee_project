@@ -105,16 +105,6 @@ def registerUser(request):
     if request.method =="POST":
         try:
             data = json.loads(request.body)  # Access JSON data
-            
-            # Check if we can detect a face
-            profile_image_bytes = base64.b64decode(data["image"].split(",")[1])
-            profile_image = Image.open(io.BytesIO(profile_image_bytes))
-            profile_image = np.array(profile_image)
-            face_locations = face_recognition.face_locations(profile_image, model="cnn", number_of_times_to_upsample=0)
-            print("face locations are ", face_locations)
-
-            if len(face_locations) == 0:
-                return JsonResponse({'message': 'No faces detected'}, status=400) 
 
             # Check if the user already exists
             try:
@@ -122,6 +112,16 @@ def registerUser(request):
                 return JsonResponse({'error': 'User already exists'}, status=400)
             
             except User.DoesNotExist:
+
+                # Check if we can detect a face
+                profile_image_bytes = base64.b64decode(data["image"].split(",")[1])
+                profile_image = Image.open(io.BytesIO(profile_image_bytes))
+                profile_image = np.array(profile_image)
+                face_locations = face_recognition.face_locations(profile_image, model="cnn", number_of_times_to_upsample=0)
+                print("face locations are ", face_locations)
+
+                if len(face_locations) == 0:
+                    return JsonResponse({'message': 'No faces detected'}, status=400) 
 
                 # Create the User object
                 user = User.objects.create_user(username=data["username"], password=data["password"])

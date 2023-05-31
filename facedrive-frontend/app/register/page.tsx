@@ -5,6 +5,7 @@ import React, { useState, useRef } from "react";
 import { registerUser } from "@/api-handler/api-handlers";
 import { useRouter } from 'next/navigation';
 import Navbar from "../components/Navbar";
+import "./styles.css";
 
 export default function Register() {
   
@@ -20,6 +21,8 @@ export default function Register() {
   const [fSetup, setfSetup] = useState(false);
   const [openCam, setOpenCam] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [invalidPhoto, setInvalidPhoto] = useState(false);
+  const [invalidUserName, setInvalidUsername] = useState(false);
 
   const loggedInState = false;
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -73,6 +76,9 @@ export default function Register() {
 
   const handleSubmit = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
+    setInvalidUsername(false);
+    setInvalidPhoto(false);
+    
     if (password !== confirmPassword) {
       setPasswordsMatch(false);
     } else {
@@ -89,9 +95,11 @@ export default function Register() {
         if (errorData.error === 'User already exists') {
           // Handle the "User already exists" error
           console.log(errorData);
+          setInvalidUsername(true);
         } else if (errorData.message === 'No faces detected') {
           // Handle the "No faces detected" error
           console.log(errorData);
+          setInvalidPhoto(true);
         } else {
           // Handle other possible errors
           console.log(errorData);
@@ -101,9 +109,6 @@ export default function Register() {
         setConfirmPassword('');
         setImage('');
         handleFSetup();
-        console.log('Username:', username);
-        console.log('Password:', password);
-        console.log(`This is the image data: ${image}`);
       }}
       
     }
@@ -155,6 +160,18 @@ export default function Register() {
               onChange={handleConfirmPasswordChange}
             />
           </div>
+          
+          {invalidPhoto && (
+            <div className="bg-red-100 rounded-lg">
+              <h1> Invalid Photo, please re-take the photo </h1>
+            </div>
+          )}
+
+          {invalidUserName && (
+            <div className="bg-red-100 rounded-lg">
+              <h1> Username already exists </h1>
+            </div>
+          )}
 
           {!passwordsMatch && <p className="text-red-500">Passwords do not match.</p>}
 
@@ -216,9 +233,9 @@ export default function Register() {
         
         {isLoading && (
           
-          <dialog className="">
-              <h1> Loading </h1>
-          </dialog>
+          <div className="fixed top-0 left-0 w-screen h-full flex items-center justify-center backdrop-blur">
+            <div className="loading"/>
+          </div>
         )}
 
     </body>
