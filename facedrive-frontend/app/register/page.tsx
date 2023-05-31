@@ -27,6 +27,7 @@ export default function Register() {
 
   const handleFSetup = () => {
     setfSetup(!fSetup);
+    handleOpenCam();
   }
 
   const handleOpenCam = () => {
@@ -81,6 +82,11 @@ export default function Register() {
     } else {
       const response = await registerUser(username, password, image);
       if (response) { console.log(response) }
+      setUsername('')
+      setPassword('')
+      setConfirmPassword('')
+      setImage('')
+      handleFSetup();
       console.log('Username:', username);
       console.log('Password:', password);
       console.log(`This is the image data: ${image}`)
