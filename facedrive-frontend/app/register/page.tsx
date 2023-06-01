@@ -5,7 +5,7 @@ import React, { useState, useRef } from "react";
 import { registerUser } from "@/api-handler/api-handlers";
 import { useRouter } from 'next/navigation';
 import Navbar from "../components/Navbar";
-import "./styles.css";
+import "../globals.css";
 
 export default function Register() {
   
@@ -82,37 +82,43 @@ export default function Register() {
     if (password !== confirmPassword) {
       setPasswordsMatch(false);
     } else {
+     
       setIsLoading(true)
       const response = await registerUser(username, password, image);
+      const data = await response.json();
+      
+      console.log("Response status is; ")
+      console.log(response.status)
+      console.log("Data is: ")
+      console.log(data)
+
       // 200: User created successfully
-      if (response.ok) { 
+      if (response.status == 200) { 
         console.log(response) 
         router.push('/drive');
       } 
-      // 400: Invalid user input
-      else if (response.status === 400) {
-        const errorData = response.json();
-        if (errorData.error === 'User already exists') {
-          // Handle the "User already exists" error
-          console.log(errorData);
-          setInvalidUsername(true);
-        } else if (errorData.message === 'No faces detected') {
-          // Handle the "No faces detected" error
-          console.log(errorData);
-          setInvalidPhoto(true);
-        } else {
-          // Handle other possible errors
-          console.log(errorData);
-        setIsLoading(false);
-        setUsername('');
-        setPassword('');
-        setConfirmPassword('');
-        setImage('');
-        handleFSetup();
-      }}
+      // 400: User already exists
+      else if (response.status == 400) {
+        console.log(data.error);
+        setInvalidUsername(true);
+      } 
+      // 401: No faces detected
+      else if (response.status == 401) {
+        console.log(data.error);
+        setInvalidPhoto(true);
+      } else {
+        console.log(data.error);
+      }
+      setIsLoading(false);
+      setUsername('');
+      setPassword('');
+      setConfirmPassword('');
+      setImage('');
+      handleFSetup();
+    }
       
     }
-  };
+  
 
   return (
     <body className="m-5 min-h-screen">
@@ -162,23 +168,23 @@ export default function Register() {
           </div>
           
           {invalidPhoto && (
-            <div className="bg-red-100 rounded-lg">
-              <h1> Invalid Photo, please re-take the photo </h1>
-            </div>
+            <div className="bg-red-100 p-2 rounded-lg">
+              <h1 className="text-red-500 text-center"> Invalid photo </h1>
+          </div>
           )}
 
           {invalidUserName && (
-            <div className="bg-red-100 rounded-lg">
-              <h1> Username already exists </h1>
+            <div className="bg-red-100 p-2 rounded-lg">
+              <h1 className="text-red-500 text-center"> Username already exists </h1>
             </div>
           )}
 
-          {!passwordsMatch && <p className="text-red-500">Passwords do not match.</p>}
+          {!passwordsMatch && <p className="text-red-500"> Passwords do not match. </p>}
 
-          <h2 className="text-center mt-6 mb-4 font-bold">Set Up Facial Recognition</h2>
+          <h2 className="text-center mt-6 mb-4 font-bold"> Set Up Facial Recognition </h2>
 
           { fSetup && <>
-            <div className="flex justify-center gap-2">
+            <div className="flex justify-center mb-2">
             { (!image || openCam ) && <div className="flex-none w-full rounded-lg">
               <Camera ref={camera} aspectRatio={16 / 9} errorMessages={{
                 noCameraAccessible: undefined,
@@ -232,9 +238,8 @@ export default function Register() {
         </div>
         
         {isLoading && (
-          
-          <div className="fixed top-0 left-0 w-screen h-full flex items-center justify-center backdrop-blur">
-            <div className="loading"/>
+          <div className="fixed top-0 left-0 bg-sky-500/50 w-screen h-full flex items-center justify-center backdrop-blur">
+            <div className="loader"/>
           </div>
         )}
 

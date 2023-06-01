@@ -84,11 +84,11 @@ def loginUser(request):
                 
                 except UserProfile.DoesNotExist:
                     # UserProfile does not exist for the user
-                    return JsonResponse({'error': 'UserProfile does not exist.'}, status=400)
+                    return JsonResponse({'error': 'UserProfile does not exist.'}, status=404)
 
             except User.DoesNotExist:
             # User does not exist
-                return JsonResponse({'error': 'User does not exist.'}, status=400)
+                return JsonResponse({'error': 'User does not exist.'}, status=404)
 
 
         
@@ -121,7 +121,7 @@ def registerUser(request):
                 print("face locations are ", face_locations)
 
                 if len(face_locations) == 0:
-                    return JsonResponse({'message': 'No faces detected'}, status=400) 
+                    return JsonResponse({'error': 'No faces detected'}, status=401) 
 
                 # Create the User object
                 user = User.objects.create_user(username=data["username"], password=data["password"])
