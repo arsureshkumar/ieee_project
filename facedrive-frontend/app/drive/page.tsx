@@ -3,7 +3,7 @@
 import Navbar from "../components/Navbar"
 import Folder from "../components/Folder";
 import File from "../components/File";
-import { useState } from "react";
+import { useState, ChangeEvent, useRef } from "react";
 
 export default function Drive(){
 
@@ -11,6 +11,7 @@ export default function Drive(){
     const [addFolder, setAddFolder] = useState(false);
     const [folders, setFolders] = useState<Folder[]>([]);
     const [folderName, setFolderName] = useState('');
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     interface Folder {
         name: string;
@@ -34,6 +35,27 @@ export default function Drive(){
         setFolderName(event.target.value);
     };
 
+    const handleUploadImage = (event: ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0]; // Get the first file from the input
+        if (file && file.type.startsWith('image/')) {
+          saveFile(file);
+        } else {
+          console.log('Invalid file type. Please select an image file.');
+        }
+    };
+
+    const saveFile = (file: File) => {
+        
+        console.log('File saved:', file);
+    };
+
+    const handleOpenFileExplorer = () => {
+        if (fileInputRef.current) {
+          fileInputRef.current.click();
+        }
+    };
+
+
     return(
         <>
             <Navbar loggedIn = {loggedIn}/>
@@ -42,7 +64,13 @@ export default function Drive(){
                 <div className="ml-8 mt-8 font-bold text-xl">Root /</div>
                 <div className="flex">
                     {/*Button to add image*/}
-                    <button>
+                    <input
+                    ref={fileInputRef}
+                    type="file"
+                    style={{ display: 'none' }}
+                    onChange={handleUploadImage}
+                    />
+                    <button onClick={handleOpenFileExplorer}>
                         <img className="mr-5 mt-8 mb-3" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAACXBIWXMAAAsTAAALEwEAmpwYAAAC/UlEQVR4nO2YTU8TURSG+2PUf6ELFREKionGiDFx6Y4FX0uDGLDtqJg0lMhGATcGKH5VqBLRWJiZttCSgrH0Q2Gm1SBMEQwG6X3NmYpAmSJtmYbEvsmbTmbuvefpOXPuLRgMRRV1AFR6awwH0YatgAdNpUVA/O8ZdIRYQZ2uIqCjmMFQ8R3EvjbJUIRh+BPDm1mGqXmGsMLwcYHBHWMY1Mg23aNnNIbGBuZTc2kNWivvLh4MM7jmGEY+M3jiDJEEQzSx+bnV/q8MzgjD+7mUX0VS99LHRbesQWvS2hSDYmUNOD2fOYBmUGU7QDZzKVbWgDOL2QWJ5mGKlTVgpsVCCsPEl9S7JMjbM5eP8wYMLTKIseSOF3w4miqR1hfhpST6PjD0TCbhiSf1AaQuHJO1O9Xxxy9DDKNSqlspu8+DDJ3jSXR4tvtpkCG4sE+A098YXFIq+F437WczDA98bAfYhpuGFFzrCeGi1YcKTlB92eZDkz0MbzRRuJPk8XQS972bYNy7FVR3BHDB6kd9fwzmtyuwCr9U0zXdq7b5UdM9BWlhVX9AB2UzyPDQz3DztYKzdzxoHIijw62dWbLNs46GgRjO3/NgcnapMD+3Hk38QNVdD5qdiYxg6W52KipkQQCvdgbQ+CSuCbIhrWcN9hiMFjG3fXCvdgQUXGr3q6XLFpDmnGvz4rTJdUI3wOv2sJqJTKXcDZBc1ydTl3frBljd7oNlZCVnQPPIMio4UdINsPK2CCu/tgPoX9oYbxXWUGbif+r2Z+cZAhTyAOTXUGbmV3UDvGLbhxJbdilxvrK8CKO+X84ZsLZXgpFzd+kGOB5NqI2S6zZT1eZdLWnlj+v67zejRUS9Xc4asK5fTho5QTTorbIW4Ui5RfhOx9dej7obTgU051TL6CFDIVTS6jpWbhaW6uzyeqZyq2V1r6uZK7cIy6Um/qihkDppGjts5ER3VZt3ubZXYtShtI2Q6bq2T2L0jMpasMxpic7WSk7oou2DNmEyXRs5oetvQ6TpN6X6vREXhqNIAAAAAElFTkSuQmCC"/>
                     </button>
                     {/*Button to add folder*/}

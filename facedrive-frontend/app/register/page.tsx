@@ -4,6 +4,7 @@ import {Camera} from "react-camera-pro";
 import React, { useState, useRef } from "react";
 import { registerUser } from "@/api-handler/api-handlers";
 import Navbar from "../components/Navbar";
+import Link from 'next/link';
 
 export default function Register() {
   
@@ -106,7 +107,7 @@ export default function Register() {
   
         <form onSubmit={handleSubmit}>
 
-        <h2 className="text-center mt-6 mb-4 font-bold">Basic Information</h2>
+        <h2 className="text-center mt-6 mb-4 font-bold text-xl">Basic Information</h2>
 
           <div>
             <label htmlFor="username">Username </label>
@@ -145,7 +146,7 @@ export default function Register() {
 
           {!passwordsMatch && <p className="text-red-500">Passwords do not match.</p>}
 
-          <h2 className="text-center mt-6 mb-4 font-bold">Set Up Facial Recognition</h2>
+          <h2 className="text-center mt-6 mb-4 font-bold text-xl">Set Up Facial Recognition</h2>
 
           { fSetup && <>
             <div className="flex justify-center gap-2">
@@ -198,7 +199,7 @@ export default function Register() {
             <button type="submit" disabled={true} className="border px-3 bg-sky-500/50 mx-auto mt-5 mb-12 text-white h-10 w-full rounded-md">Register</button>
           )}
         </form>
-
+        
         </div>
         
     </body>

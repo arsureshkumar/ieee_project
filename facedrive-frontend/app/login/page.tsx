@@ -2,9 +2,10 @@
 
 import React, { useState, useRef } from "react";
 import Navbar from "../components/Navbar";
+import Link from 'next/link';
 
 export default function Login() {
-    const [email, setEmail] = useState('');
+    const [username, setusername] = useState('');
     const [password, setPassword] = useState('');
     const loggedInState = false;
   
@@ -14,7 +15,7 @@ export default function Login() {
   
       // Here you can perform validations, API calls, etc.
   
-      console.log('Email:', email);
+      console.log('Username:', username);
       console.log('Password:', password);
       
     return (
@@ -23,12 +24,12 @@ export default function Login() {
             <h1 className="text-center font-bold mt-12 text-2xl">Welcome Back!</h1>
             <div className="w-1/3 mx-auto mt-10">
                 <form onSubmit={handleSubmit} className="bg-transparent flex flex-col justify-center">
-                    <label htmlFor="email">Email </label>
+                    <label htmlFor="username">Username </label>
                     <input
-                    type="email"
-                    id="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    type="username"
+                    id="username"
+                    value={username}
+                    onChange={(e) => setusername(e.target.value)}
                     required
                     className="bg-gray h-10 mt-3 px-3 rounded-md"
                     />
@@ -46,7 +47,7 @@ export default function Login() {
                     <button type="submit" className="border px-3 bg-lightblue mx-auto text-white h-10 w-full rounded-md">Login</button>
                 </form>
                 <br />
-                <h4 className="text-center">Don't have an account? <a href="#">Sign up now!</a></h4>
+                <h4 className="text-center">Don't have an account? <Link href="../register/" className="font-bold">Sign up now!</Link></h4>
 
             </div>
         </body>
