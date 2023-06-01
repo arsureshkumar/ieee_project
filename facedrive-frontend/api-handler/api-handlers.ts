@@ -3,25 +3,30 @@
 // localhost Django URL for now
 const apiUrl = 'http://localhost:8000/api';
 
-export async function loginUser(username: string, base64ImageData: string): Promise<any> {
+export async function loginUser(username: string, base64ImageData: string, password: any = false): Promise<any> {
     
   try {
-    const response = await fetch(`${apiUrl}/loginUser`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ username: username, image: base64ImageData }),
-    });
-
-    if (!response.ok) {
-      throw new Error('Login failed :(');
-    }
-
-    // console.log('Login successfull!');
+    if (password) {
+      const response = await fetch(`${apiUrl}/loginUser`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username: username, image: base64ImageData, password: password })
+      });
+    } else {
+      const response = await fetch(`${apiUrl}/loginUser`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username: username, image: base64ImageData })
+      });
+    
+    console.log(response)
     return response;
 
-  } catch (error) {
+  }} catch (error) {
     console.error('Error uploading image:', error);
   } 
 }
@@ -36,12 +41,8 @@ export async function registerUser(username: string, password: string, base64Ima
         },
         body: JSON.stringify({ username: username, password: password, image: base64ImageData }),
       });
-  
-      if (!response.ok) {
-        throw new Error('Registeration failed :(');
-      }
-  
-      console.log('Registeration successfull!');
+      
+      console.log(response)
       return response;
 
     } catch (error) {
@@ -58,10 +59,6 @@ export async function registerUser(username: string, password: string, base64Ima
             'Content-Type': 'application/json',
           },
         });
-    
-        if (!response.ok) {
-          throw new Error('Failed to fetch data');
-        }
     
         return response.json();
 

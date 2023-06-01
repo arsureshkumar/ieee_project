@@ -35,6 +35,7 @@ def facedect(profile_image_base64, test_image_base64, test_image_location):
     print("profile_image_encoding", profile_image_encoding)
 
     # Get face encodings for test image
+    print("Login face locations when logging in are ", test_image_location)
     face_encodings = face_recognition.face_encodings(test_image, known_face_locations=test_image_location, num_jitters=100, model="large")
     print("face_encodings", face_encodings)
 
@@ -83,11 +84,11 @@ def loginUser(request):
                 
                 except UserProfile.DoesNotExist:
                     # UserProfile does not exist for the user
-                    return JsonResponse({'error': 'UserProfile does not exist.'}, status=400)
+                    return JsonResponse({'error': 'UserProfile does not exist.'}, status=404)
 
             except User.DoesNotExist:
             # User does not exist
-                return JsonResponse({'error': 'User does not exist.'}, status=400)
+                return JsonResponse({'error': 'User does not exist.'}, status=404)
 
 
         
@@ -104,16 +105,6 @@ def registerUser(request):
     if request.method =="POST":
         try:
             data = json.loads(request.body)  # Access JSON data
-            
-            # Check if we can detect a face
-            profile_image_bytes = base64.b64decode(data["image"].split(",")[1])
-            profile_image = Image.open(io.BytesIO(profile_image_bytes))
-            profile_image = np.array(profile_image)
-            face_locations = face_recognition.face_locations(profile_image, model="cnn", number_of_times_to_upsample=0)
-            print("face locations are ", face_locations)
-
-            if len(face_locations) == 0:
-                return JsonResponse({'message': 'No faces detected'}, status=400) 
 
             # Check if the user already exists
             try:
@@ -121,6 +112,16 @@ def registerUser(request):
                 return JsonResponse({'error': 'User already exists'}, status=400)
             
             except User.DoesNotExist:
+
+                # Check if we can detect a face
+                profile_image_bytes = base64.b64decode(data["image"].split(",")[1])
+                profile_image = Image.open(io.BytesIO(profile_image_bytes))
+                profile_image = np.array(profile_image)
+                face_locations = face_recognition.face_locations(profile_image, model="cnn", number_of_times_to_upsample=0)
+                print("face locations are ", face_locations)
+
+                if len(face_locations) == 0:
+                    return JsonResponse({'error': 'No faces detected'}, status=401) 
 
                 # Create the User object
                 user = User.objects.create_user(username=data["username"], password=data["password"])

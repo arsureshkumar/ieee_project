@@ -3,8 +3,9 @@
 import {Camera} from "react-camera-pro";
 import React, { useState, useRef } from "react";
 import { registerUser } from "@/api-handler/api-handlers";
+import { useRouter } from 'next/navigation';
 import Navbar from "../components/Navbar";
-import Link from 'next/link';
+import "../globals.css";
 
 export default function Register() {
   
@@ -17,14 +18,15 @@ export default function Register() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordsMatch, setPasswordsMatch] = useState(true);
 
-  const [accountCreated, setAccountCreated] = useState(false);
-
   const [fSetup, setfSetup] = useState(false);
   const [openCam, setOpenCam] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(false);
+  const [invalidPhoto, setInvalidPhoto] = useState(false);
+  const [invalidUserName, setInvalidUsername] = useState(false);
 
   const loggedInState = false;
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
 
   const handleFSetup = () => {
     setfSetup(!fSetup);
@@ -41,10 +43,6 @@ export default function Register() {
     setImage(image); 
     handleOpenCam(); 
   }
-
-  // const handleNameChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
-  //   setName(event.target.value);
-  // };
 
   const handleUsernameChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
     setUsername(event.target.value);
@@ -78,27 +76,52 @@ export default function Register() {
 
   const handleSubmit = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
+    setInvalidUsername(false);
+    setInvalidPhoto(false);
+    
     if (password !== confirmPassword) {
       setPasswordsMatch(false);
     } else {
+     
+      setIsLoading(true)
       const response = await registerUser(username, password, image);
-      if (response) { console.log(response) }
-      setUsername('')
-      setPassword('')
-      setConfirmPassword('')
-      setImage('')
+      const data = await response.json();
+      
+      console.log("Response status is; ")
+      console.log(response.status)
+      console.log("Data is: ")
+      console.log(data)
+
+      // 200: User created successfully
+      if (response.status == 200) { 
+        console.log(response) 
+        router.push('/drive');
+      } 
+      // 400: User already exists
+      else if (response.status == 400) {
+        console.log(data.error);
+        setInvalidUsername(true);
+      } 
+      // 401: No faces detected
+      else if (response.status == 401) {
+        console.log(data.error);
+        setInvalidPhoto(true);
+      } else {
+        console.log(data.error);
+      }
+      setIsLoading(false);
+      setUsername('');
+      setPassword('');
+      setConfirmPassword('');
+      setImage('');
       handleFSetup();
-      console.log('Username:', username);
-      console.log('Password:', password);
-      console.log(`This is the image data: ${image}`)
     }
-    // event.preventDefault();
-    // const response = await registerUser(username, password, image);
-    // if (response) { console.log(response) }
-  };
+      
+    }
+  
 
   return (
-    <body className="m-5">
+    <body className="m-5 min-h-screen">
       
       <Navbar loggedIn = {loggedInState} />
 
@@ -143,13 +166,25 @@ export default function Register() {
               onChange={handleConfirmPasswordChange}
             />
           </div>
+          
+          {invalidPhoto && (
+            <div className="bg-red-100 p-2 rounded-lg">
+              <h1 className="text-red-500 text-center"> Invalid photo </h1>
+          </div>
+          )}
 
-          {!passwordsMatch && <p className="text-red-500">Passwords do not match.</p>}
+          {invalidUserName && (
+            <div className="bg-red-100 p-2 rounded-lg">
+              <h1 className="text-red-500 text-center"> Username already exists </h1>
+            </div>
+          )}
 
-          <h2 className="text-center mt-6 mb-4 font-bold text-xl">Set Up Facial Recognition</h2>
+          {!passwordsMatch && <p className="text-red-500"> Passwords do not match. </p>}
+
+          <h2 className="text-center mt-6 mb-4 font-bold"> Set Up Facial Recognition </h2>
 
           { fSetup && <>
-            <div className="flex justify-center gap-2">
+            <div className="flex justify-center mb-2">
             { (!image || openCam ) && <div className="flex-none w-full rounded-lg">
               <Camera ref={camera} aspectRatio={16 / 9} errorMessages={{
                 noCameraAccessible: undefined,
@@ -202,6 +237,12 @@ export default function Register() {
         
         </div>
         
+        {isLoading && (
+          <div className="fixed top-0 left-0 bg-sky-500/50 w-screen h-full flex items-center justify-center backdrop-blur">
+            <div className="loader"/>
+          </div>
+        )}
+
     </body>
   )
 }
