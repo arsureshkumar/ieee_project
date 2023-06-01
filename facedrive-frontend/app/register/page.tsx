@@ -130,7 +130,7 @@ export default function Register() {
   
         <form onSubmit={handleSubmit}>
 
-        <h2 className="text-center mt-6 mb-4 font-bold">Basic Information</h2>
+        <h2 className="text-center mt-6 mb-4 font-bold text-xl">Basic Information</h2>
 
           <div>
             <label htmlFor="username">Username </label>
@@ -234,7 +234,7 @@ export default function Register() {
             <button type="submit" disabled={true} className="border px-3 bg-sky-500/50 mx-auto mt-5 mb-12 text-white h-10 w-full rounded-md">Register</button>
           )}
         </form>
-
+        
         </div>
         
         {isLoading && (
