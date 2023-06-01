@@ -47,3 +47,49 @@ export async function registerUser(username: string, password: string, base64Ima
         throw error;
       }
  }
+
+ export async function userFileUpload(username: string, base64ImageData: string): Promise<any> {
+    
+  try {
+    const response = await fetch(`${apiUrl}/fileUpload`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username: username, file: base64ImageData }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Upload failed :(');
+    }
+
+    console.log('Upload successful!');
+    return response;
+
+  } catch (error) {
+    console.error('Error uploading file:', error);
+  } 
+}
+
+ export async function getUserFiles(username: string): Promise<any> {
+ 
+  try {
+      const response = await fetch(`${apiUrl}/getUserFiles`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({username: username}),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to fetch data');
+      }
+  
+      return response.json();
+
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      throw error;
+    }
+}

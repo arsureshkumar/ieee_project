@@ -113,4 +113,40 @@ def getUsers(request):
     # Return a 405 Method Not Allowed response for non-GET requests
     return JsonResponse({'error': 'Method not allowed.'}, status=405)
     
-    
+def fileUpload(request):
+    if request.method =="POST":
+        try:
+            data = json.loads(request.body)  # Access JSON data
+            
+            try:
+                user = UserProfile.objects.get(username = data["username"])
+                user.addFile(data["file"])
+            except UserProfile.DoesNotExist:
+                return JsonResponse({'message': 'No such user'}, status=400)
+            
+
+            return JsonResponse(
+                 {'message': 'POST request received successfully',
+                  'registerData': data})
+        
+        except json.JSONDecodeError:
+            return JsonResponse({'message': 'Invalid JSON data'}, status=400)
+    else:
+        return JsonResponse({'message': 'Invalid request method'}, status=405)
+    pass
+
+def getUserFiles(request):
+    if request.method == 'GET':
+        # Fetch all User objects and related UserProfile objects
+        try:
+            user = UserProfile.objects.get(username = data["username"])
+            user_data = user.getFiles()
+        except UserProfile.DoesNotExist:
+            return JsonResponse({'message': 'No such user'}, status=400)
+
+        # Return the user data as a JSON response
+        return JsonResponse({'users': user_data})
+
+    # Return a 405 Method Not Allowed response for non-GET requests
+    return JsonResponse({'error': 'Method not allowed.'}, status=405)
+    pass
