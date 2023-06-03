@@ -29,14 +29,14 @@ def facedect(profile_image_base64, test_image_base64, test_image_location):
 
     # Get face encodings for profile image
     profile_locations = face_recognition.face_locations(profile_image, model="cnn", number_of_times_to_upsample=0)
-    print("profile locations when logging in are ", profile_locations)
+    print("User face locations when logging in are ", profile_locations)
     profile_image_encoding = face_recognition.face_encodings(profile_image, known_face_locations=profile_locations, num_jitters=100, model="large")
-    print("profile_image_encoding", profile_image_encoding)
+    print("User image encoding", profile_image_encoding)
 
     # Get face encodings for test image
     print("Login face locations when logging in are ", test_image_location)
     face_encodings = face_recognition.face_encodings(test_image, known_face_locations=test_image_location, num_jitters=100, model="large")
-    print("face_encodings", face_encodings)
+    print("Login image encoding", face_encodings)
 
     if len(face_encodings) > 0:
         # Compare test image encodings with profile image encoding
@@ -68,6 +68,7 @@ def loginUser(request):
                     head_shot_bytes = base64.b64decode(head_shot.split(",")[1])
                     headshot_image = Image.open(io.BytesIO(head_shot_bytes))
                     headshot_image = np.array(headshot_image)
+                    print("Beginning face recognition method, will take ~40 sec")
                     face_locations = face_recognition.face_locations(headshot_image, model="cnn", number_of_times_to_upsample=0)
                     if len(face_locations) == 0:
                         return JsonResponse({'error': 'Cannot find face.'}, status=400)
@@ -116,8 +117,9 @@ def registerUser(request):
                 profile_image_bytes = base64.b64decode(data["image"].split(",")[1])
                 profile_image = Image.open(io.BytesIO(profile_image_bytes))
                 profile_image = np.array(profile_image)
+                print("Trying to find faces in the photo.")
                 face_locations = face_recognition.face_locations(profile_image, model="cnn", number_of_times_to_upsample=0)
-                print("face locations are ", face_locations)
+                print("Face location is", face_locations)
 
                 if len(face_locations) == 0:
                     return JsonResponse({'error': 'No faces detected'}, status=401) 
