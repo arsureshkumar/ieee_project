@@ -4,7 +4,7 @@ import Navbar from "../../components/Navbar"
 import Folder from "../../components/Folder";
 import File from "../../components/File";
 import { useRouter } from 'next/navigation';
-import { useState, ChangeEvent, useRef } from "react";
+import { useState, useEffect, ChangeEvent, useRef } from "react";
 
 export default function Drive({ params }){
 
@@ -56,6 +56,17 @@ export default function Drive({ params }){
           fileInputRef.current.click();
         }
     };
+
+    useEffect(() => {
+        const savedValue = localStorage.getItem('folders');
+        if (savedValue) {
+            setFolders(JSON.parse(savedValue));
+        }
+    }, []);
+    
+    useEffect(() => {
+        localStorage.setItem('folders', JSON.stringify(folders));
+    }, [folders]);
 
 
     return(
