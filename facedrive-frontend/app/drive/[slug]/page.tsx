@@ -72,6 +72,17 @@ export default function Drive({ params }){
         }
     };
 
+    useEffect(() => {
+        const savedValue = localStorage.getItem('folders');
+        if (savedValue) {
+            setFolders(JSON.parse(savedValue));
+        }
+    }, []);
+    
+    useEffect(() => {
+        localStorage.setItem('folders', JSON.stringify(folders));
+    }, [folders]);
+
 
     return(
         <>
