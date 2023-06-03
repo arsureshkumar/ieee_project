@@ -1,13 +1,15 @@
 "use client"
 
-import Navbar from "../components/Navbar"
-import Folder from "../components/Folder";
-import File from "../components/File";
+import Navbar from "../../components/Navbar"
+import Folder from "../../components/Folder";
+import File from "../../components/File";
+import { useRouter } from 'next/navigation';
 import { useState, ChangeEvent, useRef } from "react";
 
-export default function Drive(){
+export default function Drive({ params }){
 
     const loggedIn = true;
+    const username = params.slug;
     const [addFolder, setAddFolder] = useState(false);
     const [folders, setFolders] = useState<Folder[]>([]);
     const [folderName, setFolderName] = useState('');
@@ -58,7 +60,7 @@ export default function Drive(){
 
     return(
         <>
-            <Navbar loggedIn = {loggedIn}/>
+            <Navbar loggedIn = {loggedIn} username={username}/>
 
             <div className="flex justify-between">
                 <div className="ml-8 mt-8 font-bold text-xl">Root /</div>

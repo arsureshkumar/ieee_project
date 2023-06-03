@@ -44,7 +44,7 @@ export default function Login() {
       console.log(response)
       if (response.status == 200) {
         setSuccessLogin(true)
-        router.push("/drive");
+        router.push(`/drive/${data.username}`);
       } 
       // User does not exist
       else if (response.status == 404) {
@@ -64,7 +64,7 @@ export default function Login() {
   
     return (
         <body className="bg-transparent">
-            <Navbar loggedIn={loggedInState}/>
+            <Navbar loggedIn={loggedInState} username=""/>
             <h1 className="text-center font-bold mt-12 text-2xl"> Welcome Back!</h1>
             <div className="w-1/3 mx-auto mt-10">
                 <form onSubmit={handleSubmit} className="bg-transparent flex flex-col justify-center">

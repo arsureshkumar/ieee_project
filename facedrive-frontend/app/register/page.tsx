@@ -123,7 +123,7 @@ export default function Register() {
   return (
     <body className="m-5 min-h-screen">
       
-      <Navbar loggedIn = {loggedInState} />
+      <Navbar loggedIn = {loggedInState} username=""/>
 
       <div className="w-1/3 mx-auto mt-10">
       <h1 className="text-center font-bold mt-12 mb-8 text-2xl">Register for Face Drive</h1>

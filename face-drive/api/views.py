@@ -77,7 +77,7 @@ def loginUser(request):
                         # 1st arg is image in DB, 2nd is login image
                         if facedect(head_shot, login_headshot, face_locations):
                             print("face rec success!")
-                            return JsonResponse({'message': 'User face rec auth success.'}, status=200)
+                            return JsonResponse({'message': 'User face rec auth success.', 'username': username}, status=200)
                         else:
                             print("face rec failure!")
                             return JsonResponse({'error': 'Face not recognized.'}, status=400)
