@@ -1,8 +1,7 @@
-from django.http import HttpResponse
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
-from .models import UserProfile
+from .models import UserProfile, ImageFiles
 import json
 
 # Face recognition libraries
@@ -162,5 +161,40 @@ def getUsers(request):
 
     # Return a 405 Method Not Allowed response for non-GET requests
     return JsonResponse({'error': 'Method not allowed.'}, status=405)
+
+def getImages(request):
+    if request.method == 'GET':
+        username = request.GET.get("username")
+        print(username)
+        user = User.objects.get(username=username)
+        images = ImageFiles.objects.filter(user=user)
+        image_data = []
+        for image in images:
+            image_data.append({
+                'file_name': image.file_name,
+                'file_endpoint': image.file_string
+            })
+        return JsonResponse({'data': image_data}, status=200)
+    # Return a 405 Method Not Allowed response for non-GET requests
+    return JsonResponse({'error': 'Method not allowed.'}, status=405)
+
+
+def uploadImage(request):
+    if request.method =="POST":
+        try:
+            data = json.loads(request.body)
+            username = data["username"]
+            fileName = data["filename"]
+            imageString = data["image"]
+            # Save data in DB
+            user = User.objects.get(username=username)
+            image_row = ImageFiles(user=user, file_name=fileName, file_string=imageString)
+            image_row.save()
+            return JsonResponse({'data': data}, status=200)
+            
+        except json.JSONDecodeError:
+            return JsonResponse({'message': 'Invalid JSON data'}, status=400)
+    else:
+        return JsonResponse({'message': 'Invalid request method'}, status=405)
     
     
