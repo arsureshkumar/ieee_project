@@ -3,8 +3,8 @@
 import Navbar from "../../components/Navbar"
 import Folder from "../../components/Folder";
 import File from "../../components/File";
-import { useRouter } from 'next/navigation';
 import { useState, useEffect, ChangeEvent, useRef } from "react";
+import { uploadImage, getuserImages } from "@/api-handler/api-handlers";
 
 export default function Drive({ params }){
 
@@ -13,11 +13,21 @@ export default function Drive({ params }){
     const [addFolder, setAddFolder] = useState(false);
     const [folders, setFolders] = useState<Folder[]>([]);
     const [folderName, setFolderName] = useState('');
+    const [images, setImages] = useState([])
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     interface Folder {
         name: string;
     }
+
+    const loadImages = async () => {
+        const data = await getuserImages(username);
+        setImages(data.data);
+    }
+
+    useEffect(() => {
+        loadImages();
+    }, [])
 
     const handleAddFolder = async (event: { preventDefault: () => void }) => {
         event.preventDefault();
@@ -37,18 +47,23 @@ export default function Drive({ params }){
         setFolderName(event.target.value);
     };
 
-    const handleUploadImage = (event: ChangeEvent<HTMLInputElement>) => {
+    const handleUploadImage = async (event: ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0]; // Get the first file from the input
         if (file && file.type.startsWith('image/')) {
-          saveFile(file);
+          await saveFile(file);
         } else {
           console.log('Invalid file type. Please select an image file.');
         }
     };
 
-    const saveFile = (file: File) => {
-        
-        console.log('File saved:', file);
+    const saveFile = async (file: File) => {
+        try {
+            const response = await uploadImage(username, file).then();
+            console.log(response);
+            setImages([...images, { file_name: response.data.filename, file_endpoint: response.data.image }]);
+          } catch (error) {
+            console.error('Error uploading image:', error);
+          }
     };
 
     const handleOpenFileExplorer = () => {
@@ -115,16 +130,19 @@ export default function Drive({ params }){
                 </div>
             }
 
-            <div>
+            <div className="mb-10">
                 
                 {folders.map((folder, index) => (
                     <Folder key={index} name={folder.name} />
                 ))}
 
-                <File 
-                    name = {"Image 1"} 
-                    url = {"https://loremflickr.com/320/240"}
+                {images.map((image) => (
+                    <File 
+                    name = {image.file_name} 
+                    url = {image.file_endpoint}
                 />
+                ))}
+                
             </div>
         </>
     )

@@ -95,7 +95,7 @@ export default function Register() {
       // 200: User created successfully
       if (response.status == 200) { 
         console.log(response) 
-        router.push('/drive');
+        router.push(`/drive/${username}`);
       } 
       // 400: User already exists
       else if (response.status == 400) {
